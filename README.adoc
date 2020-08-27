@@ -1,0 +1,49 @@
+= Keycloak "Matrix" :D
+Paulo Jerônimo <paulojeronimo@gmail.com>, {localdatetime}
+:toc:
+:numbered:
+:icons: font
+
+== Load functions
+
+----
+$ source functions.sh
+----
+
+== Create
+
+----
+$ matrix-create
+----
+
+NOTE: You can add `--project-add .` to the command above.
+
+== Status
+
+----
+$ matrix-status
+----
+
+== Enter
+
+----
+$ matrix-enter
+----
+
+== Stop
+
+----
+$ matrix-stop
+----
+
+== Start
+
+----
+$ matrix-start
+----
+
+== Destroy
+
+----
+$ matrix-destroy
+----
