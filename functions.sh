@@ -8,6 +8,11 @@ case "$OSTYPE" in
       return 1
     }
     sed() { gsed "$@"; }
+    which ggrep &> /dev/null || {
+      echo -e "Install ggrep!\n$ brew install grep"
+      return 1
+    }
+    function grep { ggrep "$@"; }
 esac
 [ -f ./config.sh ] || cp ./config.sample.sh ./config.sh
 source ./config.sh || {

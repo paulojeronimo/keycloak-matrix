@@ -5,7 +5,7 @@ MATRIX_NAME=keycloak
 MATRIX_CONTAINER_NAME=$MATRIX_NAME
 
 # Image version
-MATRIX_VERSION=11.0.0
+MATRIX_VERSION=11.0.2
 
 # Image name
 MATRIX_IMAGE_NAME=quay.io/keycloak/keycloak:$MATRIX_VERSION

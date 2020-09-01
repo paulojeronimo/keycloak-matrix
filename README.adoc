@@ -1,49 +1,142 @@
-= Keycloak "Matrix" :D
+= Keycloak "Matrix"
 Paulo Jerônimo <paulojeronimo@gmail.com>, {localdatetime}
-:toc:
-:numbered:
+:toc: macro
+:toclevels: 4
 :icons: font
+:numbered:
 
-== Load functions
+:uri-keycloak: https://www.keycloak.org
+:uri-the-admin-cli: https://www.keycloak.org/docs/latest/server_admin/#the-admin-cli
+
+*This project turns possible to register clients in Keycloak in an
+automated way*. +
+Here, {uri-keycloak}[Keycloak^] is managed by Docker. +
+{uri-the-admin-cli}[The Admin CLI^] is invoked inside the created
+container by `matrix-functions.sh` to create realms, and manage the
+clients. +
+Let's see how this works by following the next steps.
+
+toc::[]
+
+== Prerequisites
+
+. Docker installed.
+. A macOS or Linux operational system.
+
+NOTE: This project was only tested on macOS 10.15.6 and Linux Ubuntu
+20.04.1.
+
+== Download the project and change the current directory
+
+----
+$ git clone https://github.com/paulojeronimo/keyckoak-matrix
+$ cd `basedir $_`
+----
+
+== Turn the Matrix functions available in your shell
 
 ----
 $ source functions.sh
 ----
 
-== Create
+. The line above will turn available the `matrix-*` functions in your
+shell.
+You can see what are these functions by typing the following command:
++
+----
+$ set | grep ^matrix- | sort
+----
++
+. It will also put a line inside your `~/.bashrc` or `~./bash_profile`
+  (depend on with OS you are using) with will automatically load this
+script for you. You can check this by running the following command:
++
+----
+$ [[ $OSTYPE =~ darwin ]] && profile=~/.bash_profile || profile=~/.bashrc
+$ grep functions $profile
+----
+
+== Start the Matrix
 
 ----
 $ matrix-create
 ----
 
-NOTE: You can add `--project-add .` to the command above.
-
-== Status
-
+. You can now open http://localhost:8080/auth/admin/ and log in using
+the credentials configured in `config.sh`. The credentails are
+configured by two shell variables: `MATRIX_ADMIN_USER` and
+`MATRIX_ADMIN_PASSWORD`.
+.. The `config.sh` is a copy of the file `config.sample.sh`
+with your own configurations (and it is ignored by Git).
+. The `matrix-create` function will start a Keycloak docker container.
+This container will be an instance of the image configured in the file
+`config.sh`. The docker image (and the created container) can be
+checked by the following commands:
++
+----
+$ docker images | grep keycloak
+$ docker container ls | grep keycloak
+----
+. You can also use the `matrix-status` function to discover if Keycloak
+  is started.
++
 ----
 $ matrix-status
 ----
-
-== Enter
-
+. Wait until Keycloak is started! You can check the logs by using the
+  command `docker logs -f keycloak` until you see a line like this:
++
 ----
-$ matrix-enter
-----
-
-== Stop
-
-----
-$ matrix-stop
+00:57:26,386 INFO  [org.jboss.as] (Controller Boot Thread) WFLYSRV0051:
+Admin console listening on http://127.0.0.1:9990
 ----
 
-== Start
+== Run the sample apps
+
+=== Plain JavaScript
+
+==== Starting and configuring Keycloak
 
 ----
-$ matrix-start
+$ matrix-project-add samples/plain-js/
+----
+. The `matrix-project-add` function will add the specified project.
+.. A project is a directory containing a file called
+`matrix-functions.sh`.
+The function with suffix `-project-add` (inside this file) will be
+called automatically.
+
+==== Starting the webapp
+
+----
+$ samples/plain-js/serve.sh &
 ----
 
-== Destroy
+. This will start a local server listening on port 3000 and serving the
+  directory link:plain-js/webapp[] which contains an static
+HTML file called `index.html`.
 
 ----
-$ matrix-destroy
+$ open http://localhost:3000
 ----
+. If you are using Linux, type `xdg-open` in place of `open` in the
+  command above.
+. You will need to register an new user. After that you will be
+  automatically redirected to the app, as a logged user.
+
+==== References
+
+* https://www.keycloak.org/docs/latest/securing_apps/#_javascript_adapter
+* https://github.com/keycloak/keycloak-quickstarts/tree/latest/app-jee-html5
+
+=== React
+
+TODO
+
+=== Angular
+
+TODO
+
+=== Spring Boot
+
+TODO
