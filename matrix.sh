@@ -1,15 +1,28 @@
 #!/usr/bin/env bash
-export KEYCLOAK_HOME=/opt/jboss/keycloak
-export PATH=$KEYCLOAK_HOME/bin:$PATH
+case "$MATRIX_NAME" in
+  keycloak)
+    export KEYCLOAK_HOME=/opt/jboss/keycloak
+    export PATH=$KEYCLOAK_HOME/bin:$PATH
+  ;;
+  rh-sso*)
+    export RH_SSO_HOME=/opt/eap
+    export PATH=$RH_SSO_HOME/bin:$PATH
+  ;;
+esac
 
 matrix-path() {
   echo $PATH | tr : '\n'
 }
 
 matrix-master-realm-login() {
+  local host=localhost
+  case "$MATRIX_NAME" in
+    rh-sso*)
+      host=$(tail -1 /etc/hosts | cut -f1)
+  esac
   kcadm.sh config credentials \
-    --server http://localhost:8080/auth --realm master \
-    --user admin --password admin \
+    --server http://$host:8080/auth --realm master \
+    --user $MATRIX_ADMIN_USER --password $MATRIX_ADMIN_PASSWORD \
     --client admin-cli
 }
 

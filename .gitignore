@@ -3,3 +3,7 @@
 /config.sh
 /projects
 /build*
+/keystore
+/truststore
+/jgroups
+/.setup-done

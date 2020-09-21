@@ -9,9 +9,11 @@
 
 _matrix-start() {
   local dir=$1
-  docker run -d --name $MATRIX_CONTAINER_NAME -p $MATRIX_PORT:8080 \
-    -v "$MATRIX_HOME":/matrix \
+  docker run -d --name $MATRIX_CONTAINER_NAME $MATRIX_MEMORY \
+    $MATRIX_PORTS \
     $MATRIX_ENVIRONMENT \
+    -v "$MATRIX_HOME":/matrix \
+    $MATRIX_VOLUMES \
     $MATRIX_IMAGE_NAME
   docker exec -t $MATRIX_CONTAINER_NAME /bin/bash -c 'source /matrix/functions.sh'
   _matrix-project "$dir"
